@@ -26,6 +26,9 @@ echo "Creating dependencies report for ${STACK_VERSION}"
 mkdir -p build/distributions/dependencies-reports/
 bin/dependencies-report --csv=build/distributions/dependencies-reports/logstash-${STACK_VERSION}.csv
 
+echo "Saving tar.gz for docker images"
+docker save docker.elastic.co/logstash/logstash-full:${STACK_VERSION}-SNAPSHOT | gzip -c > build/logstash-${STACK_VERSION}-SNAPSHOT-docker-image.tar.gz
+
 echo "GENERATED DEPENDENCIES REPORT"
 shasum build/reports/dependencies-reports/logstash-${STACK_VERSION}.csv
 
