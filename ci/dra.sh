@@ -19,6 +19,11 @@ docker save docker.elastic.co/logstash/logstash:${STACK_VERSION}-SNAPSHOT | gzip
 docker save docker.elastic.co/logstash/logstash-oss:${STACK_VERSION}-SNAPSHOT | gzip -c > build/logstash-oss-${STACK_VERSION}-docker-image-x86_64.tar.gz
 docker save docker.elastic.co/logstash/logstash-ubi8:${STACK_VERSION}-SNAPSHOT | gzip -c > build/logstash-ubi8-${STACK_VERSION}-docker-image-x86_64.tar.gz
 
+# these are looked up from the project root
+mv build/logstash-${STACK_VERSION}-docker-image-x86_64.tar.gz .
+mv build/logstash-oss-${STACK_VERSION}-docker-image-x86_64.tar.gz .
+mv build/logstash-ubi8-${STACK_VERSION}-docker-image-x86_64.tar.gz .
+
 echo "GENERATED ARTIFACTS"
 for file in build/logstash-*; do shasum $file;done
 
