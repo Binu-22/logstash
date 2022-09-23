@@ -19,11 +19,6 @@ docker save docker.elastic.co/logstash/logstash:${STACK_VERSION}-SNAPSHOT | gzip
 docker save docker.elastic.co/logstash/logstash-oss:${STACK_VERSION}-SNAPSHOT | gzip -c > build/logstash-oss-${STACK_VERSION}-docker-image-x86_64.tar.gz
 docker save docker.elastic.co/logstash/logstash-ubi8:${STACK_VERSION}-SNAPSHOT | gzip -c > build/logstash-ubi8-${STACK_VERSION}-docker-image-x86_64.tar.gz
 
-# these are looked up from the project root
-mv build/logstash-${STACK_VERSION}-docker-image-x86_64.tar.gz .
-mv build/logstash-oss-${STACK_VERSION}-docker-image-x86_64.tar.gz .
-mv build/logstash-ubi8-${STACK_VERSION}-docker-image-x86_64.tar.gz .
-
 echo "GENERATED ARTIFACTS"
 for file in build/logstash-*; do shasum $file;done
 
@@ -31,17 +26,17 @@ echo "Creating dependencies report for ${STACK_VERSION}"
 mkdir -p build/distributions/dependencies-reports/
 bin/dependencies-report --csv=build/distributions/dependencies-reports/logstash-${STACK_VERSION}.csv
 
-echo "Saving tar.gz for docker images"
-docker save docker.elastic.co/logstash/logstash:${STACK_VERSION}-SNAPSHOT | gzip -c > build/logstash-${STACK_VERSION}-docker-image-x86_64.tar.gz
-docker save docker.elastic.co/logstash/logstash-oss:${STACK_VERSION}-SNAPSHOT | gzip -c > build/logstash-oss-${STACK_VERSION}-docker-image-x86_64.tar.gz
-docker save docker.elastic.co/logstash/logstash-ubi8:${STACK_VERSION}-SNAPSHOT | gzip -c > build/logstash-ubi8-${STACK_VERSION}-docker-image-x86_64.tar.gz
-
 echo "GENERATED DEPENDENCIES REPORT"
 shasum build/reports/dependencies-reports/logstash-${STACK_VERSION}.csv
 
 # set required permissions on artifacts and directory
 chmod -R a+r build/*
 chmod -R a+w build
+
+# Move the docker-images where the release-manager expects them (project root)
+mv build/logstash-${STACK_VERSION}-docker-image-x86_64.tar.gz .
+mv build/logstash-oss-${STACK_VERSION}-docker-image-x86_64.tar.gz .
+mv build/logstash-ubi8-${STACK_VERSION}-docker-image-x86_64.tar.gz .
 
 # ensure the latest image has been pulled
 docker pull docker.elastic.co/infra/release-manager:latest
