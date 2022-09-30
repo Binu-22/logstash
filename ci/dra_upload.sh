@@ -63,7 +63,7 @@ gsutil cp gs://logstash-ci-artifacts/dra/${STACK_VERSION}/logstash-${STACK_VERSI
 gsutil cp gs://logstash-ci-artifacts/dra/${STACK_VERSION}/logstash-oss-${STACK_VERSION}-docker-image-aarch64.tar.gz build/
 gsutil cp gs://logstash-ci-artifacts/dra/${STACK_VERSION}/logstash-ubi8-${STACK_VERSION}-docker-image-aarch64.tar.gz build/
 
-gsutil cp gs://logstash-ci-artifacts/dra/${STACK_VERSION}/dependencies-reports/logstash-${STACK_VERSION}.csv build/
+gsutil cp gs://logstash-ci-artifacts/dra/${STACK_VERSION}/logstash-${STACK_VERSION}.csv build/
 
 echo "Downloaded ARTIFACTS"
 for file in build/logstash-*; do shasum $file;done
@@ -79,25 +79,25 @@ mv build/logstash-ubi8-${STACK_VERSION}-docker-image-aarch64.tar.gz .
 mkdir -p build/distributions/dependencies-reports/
 mv build/logstash-${STACK_VERSION}.csv build/distributions/dependencies-reports/
 
-# # set required permissions on artifacts and directory
-# chmod -R a+r build/*
-# chmod -R a+w build
-# 
-# # ensure the latest image has been pulled
-# docker pull docker.elastic.co/infra/release-manager:latest
-# 
-# # collect the artifacts for use with the unified build
-# docker run --rm \
-#   --name release-manager \
-#   -e VAULT_ADDR \
-#   -e VAULT_ROLE_ID \
-#   -e VAULT_SECRET_ID \
-#   --mount type=bind,readonly=false,src="$PWD",target=/artifacts \
-#   docker.elastic.co/infra/release-manager:latest \
-#     cli collect \
-#       --project logstash \
-#       --branch 8.4 \
-#       --commit "$(git rev-parse HEAD)" \
-#       --workflow "staging" \
-#       --version "${STACK_VERSION}" \
-#       --artifact-set main
+# set required permissions on artifacts and directory
+chmod -R a+r build/*
+chmod -R a+w build
+
+# ensure the latest image has been pulled
+docker pull docker.elastic.co/infra/release-manager:latest
+
+# collect the artifacts for use with the unified build
+docker run --rm \
+  --name release-manager \
+  -e VAULT_ADDR \
+  -e VAULT_ROLE_ID \
+  -e VAULT_SECRET_ID \
+  --mount type=bind,readonly=false,src="$PWD",target=/artifacts \
+  docker.elastic.co/infra/release-manager:latest \
+    cli collect \
+      --project logstash \
+      --branch 8.4 \
+      --commit "$(git rev-parse HEAD)" \
+      --workflow "staging" \
+      --version "${STACK_VERSION}" \
+      --artifact-set main
