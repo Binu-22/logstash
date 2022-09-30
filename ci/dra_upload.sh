@@ -7,6 +7,7 @@
 export JRUBY_OPTS="-J-Xmx1g"
 
 STACK_VERSION=`cat versions.yml | sed -n 's/^logstash\:\s\([[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*\)$/\1/p'`
+RELEASE_BRANCH=`cat versions.yml | sed -n 's/^logstash\:\s\([[:digit:]]*\.[[:digit:]]\)*\.[[:digit:]]*$/\1/p'
 
 echo "Download all the artifacts for version ${STACK_VERSION}"
 mkdir build/
@@ -77,7 +78,7 @@ mv build/logstash-oss-${STACK_VERSION}-docker-image-aarch64.tar.gz .
 mv build/logstash-ubi8-${STACK_VERSION}-docker-image-aarch64.tar.gz .
 
 mkdir -p build/distributions/dependencies-reports/
-mv build/logstash-${STACK_VERSION}.csv build/distributions/dependencies-reports/
+mv build/logstash-${STACK_VERSION}.csv build/distributions/dependencies-${STACK_VERSION}.csv
 
 # set required permissions on artifacts and directory
 chmod -R a+r build/*
