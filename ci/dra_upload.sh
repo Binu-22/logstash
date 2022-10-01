@@ -7,7 +7,7 @@
 export JRUBY_OPTS="-J-Xmx1g"
 
 STACK_VERSION=`cat versions.yml | sed -n 's/^logstash\:\s\([[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*\)$/\1/p'`
-RELEASE_BRANCH=`cat versions.yml | sed -n 's/^logstash\:\s\([[:digit:]]*\.[[:digit:]]\)*\.[[:digit:]]*$/\1/p'`
+RELEASE_BRANCH=`git rev-parse --abbrev-ref HEAD`
 
 echo "Download all the artifacts for version ${STACK_VERSION}"
 mkdir build/
@@ -83,6 +83,9 @@ mv build/logstash-${STACK_VERSION}.csv build/distributions/dependencies-${STACK_
 # set required permissions on artifacts and directory
 chmod -R a+r build/*
 chmod -R a+w build
+
+chmod -R a+r $PWD/*
+chmod -R a+w $PWD
 
 # ensure the latest image has been pulled
 docker pull docker.elastic.co/infra/release-manager:latest
